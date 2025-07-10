@@ -12,7 +12,7 @@ const Chat = () => {
   const user = useSelector((store) => store.user);
   const userId = user?._id;
 
-  // 📩 Fetch past chat messages on component mount
+  // 📩 Fetch past chat messages on component mount hhh
   const fetchChatMessages = async () => {
     const chat = await axios.get(`${BASE_URL}/chat/${targetUserId}`, {
       withCredentials: true,
