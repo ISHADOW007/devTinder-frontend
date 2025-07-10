@@ -11,6 +11,10 @@ import Chat from "./components/Chat";
 import CreateCommunity from "./components/CreateCommunity";
 import UserCommunityList from "./components/UserCommunityList";
 import AllCommunityList from "./components/AllCommunityList";
+import UserCommunityRequests from "./components/UserCommunityRequests";
+import CommunityMembers from "./components/CommunityMembers";
+import CommunitiesWhereImemberOrAdmin from "./components/CommunitiesWhereImemberOrAdmin";
+import CommunitiesWhereImemberOrAdminmembersList from "./components/CommunitiesWhereImemberOrAdminmembersList";
 
 export default function App() {
   return (
@@ -34,7 +38,15 @@ export default function App() {
             {/* 🌐 Community routes */}
             <Route path="createCommunity" element={<CreateCommunity />} />
             <Route path="/userCommunity" element={<UserCommunityList />} />
+            <Route path="/userCommunity/:id" element={<UserCommunityRequests />} />
             <Route path="/allCommunityList" element={<AllCommunityList />} />
+            <Route path="/community/:id/members" element={<CommunityMembers />} />
+            <Route path="/communitiesWhereIMemberOrAdmin" element={<CommunitiesWhereImemberOrAdmin />} />
+            <Route path="/:id/whereIamAdminOrMembermembersList" element={<CommunitiesWhereImemberOrAdminmembersList />} />
+            
+            
+
+
           </Route>
         </Routes>
       </BrowserRouter>

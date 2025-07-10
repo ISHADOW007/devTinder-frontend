@@ -111,6 +111,10 @@ const Navbar = () => {
                      allCommunityList
                     <span className="badge badge-primary">New</span>
                   </Link>
+                  <Link to="/communitiesWhereIMemberOrAdmin" className="hover:bg-gray-100 rounded">
+                     CommunitiesWhereImemberOrAdmin
+                    <span className="badge badge-primary">New</span>
+                  </Link>
                 </li>
               </ul>
             )}
