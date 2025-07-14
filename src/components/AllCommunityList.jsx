@@ -72,7 +72,7 @@ const AllCommunityList = () => {
                 key={community._id}
                 className="bg-white border rounded-xl shadow-md p-5 hover:shadow-lg transition-shadow"
               >
-                <h3 className="text-xl font-bold text-blue-800">{community.name}</h3>
+                <h3 className="text-xl font-bold text-blue-800">{community?.name}</h3>
                 <p className="text-sm text-gray-600 mt-1">
                   {community.description || "No description"}
                 </p>
@@ -80,9 +80,9 @@ const AllCommunityList = () => {
                 <div className="mt-4 text-sm text-gray-700">
                   <p>
                     👤 <span className="font-medium">Creator:</span>{" "}
-                    {community.creator.firstName} {community.creator.lastName}
+                    {community?.creator?.firstName} {community?.creator?.lastName}
                   </p>
-                  <p>📧 {community.creator.emailId}</p>
+                  <p>📧 {community?.creator?.emailId}</p>
                 </div>
 
                 {/* JOIN BUTTON */}

@@ -31,7 +31,7 @@ const CommunitiesWhereImemberOrAdmin = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h2 className="text-3xl font-bold mb-6">Joine Communitie as member or admin</h2>
+      <h2 className="text-3xl font-bold mb-6">Joined Communitie as member or admin</h2>
       <ul className="space-y-4">
         {communities.map((comm) => (
           <li
@@ -59,7 +59,7 @@ const CommunitiesWhereImemberOrAdmin = () => {
 
               {/* Chat button for all */}
               <button
-                onClick={() => navigate(`/community/${comm._id}/chat`)}
+                onClick={() => navigate(`/communityChat/${comm._id}`)}
                 className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
               >
                 Chat

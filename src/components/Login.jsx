@@ -4,19 +4,24 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../utils/constants";
+import { FaGithub } from "react-icons/fa";
+import { MdEmail } from "react-icons/md";
+import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isLoginForm, setIsLoginForm] = useState(true);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // 🔐 Handle login
   const handleLogin = async () => {
     try {
       const res = await axios.post(
@@ -24,8 +29,8 @@ const Login = () => {
         { emailId, password },
         { withCredentials: true }
       );
-
       dispatch(addUser(res.data));
+      console.log(res.data)
       return navigate("/");
     } catch (err) {
       console.log("Login Error:", err?.response?.data);
@@ -33,17 +38,20 @@ const Login = () => {
     }
   };
 
-  // 📝 Handle sign up
   const handleSignUp = async () => {
+    if (password !== confirmPassword) {
+      return setError("Passwords do not match");
+    }
+
     try {
       const res = await axios.post(
         BASE_URL + "/signup",
         { firstName, lastName, emailId, password },
         { withCredentials: true }
       );
-
       dispatch(addUser(res.data.data));
-      return navigate("/profile");
+      console.log(res.data.data)
+      return navigate("/formFillUp");
     } catch (err) {
       console.log("Signup Error:", err?.response?.data);
       setError(err?.response?.data || { error: "Something went wrong" });
@@ -51,97 +59,135 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center my-10">
-      <div className="card bg-base-300 w-96 shadow-xl">
-        <div className="card-body">
-          <h2 className="card-title justify-center">
-            {isLoginForm ? "Login" : "Sign Up"}
-          </h2>
+    <div className="flex justify-center items-center min-h-screen bg-[#0e112e] px-4">
+      <div className="w-full max-w-md bg-[#1e2561] text-white p-6 rounded-2xl shadow-lg relative">
+        <button
+          onClick={() => setIsLoginForm((prev) => !prev)}
+          className="absolute top-4 right-4 text-white text-xl hover:text-gray-300"
+        >
+          ✕
+        </button>
 
-          <div>
-            {/* Signup-specific fields */}
-            {!isLoginForm && (
-              <>
-                <label className="form-control w-full max-w-xs my-2">
-                  <div className="label">
-                    <span className="label-text">First Name</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={firstName}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </label>
+        <h2 className="text-2xl font-bold text-center mb-6">
+          <span className="text-3xl">💖</span>{" "}
+          {isLoginForm ? "Welcome Back" : "Create Your Account"}
+        </h2>
 
-                <label className="form-control w-full max-w-xs my-2">
-                  <div className="label">
-                    <span className="label-text">Last Name</span>
-                  </div>
-                  <input
-                    type="text"
-                    value={lastName}
-                    className="input input-bordered w-full max-w-xs"
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </label>
-              </>
-            )}
+        {!isLoginForm && (
+          <>
+            <input
+              type="text"
+              placeholder="First Name"
+              className="w-full px-4 py-2 mb-3 rounded bg-[#2c3374] text-white placeholder-gray-400 focus:outline-none"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              className="w-full px-4 py-2 mb-3 rounded bg-[#2c3374] text-white placeholder-gray-400 focus:outline-none"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </>
+        )}
 
-            {/* Common login/signup fields */}
-            <label className="form-control w-full max-w-xs my-2">
-              <div className="label">
-                <span className="label-text">Email ID:</span>
-              </div>
-              <input
-                type="text"
-                value={emailId}
-                className="input input-bordered w-full max-w-xs"
-                onChange={(e) => setEmailId(e.target.value)}
-              />
-            </label>
+        <input
+          type="email"
+          placeholder="your@email.com"
+          className="w-full px-4 py-2 mb-3 rounded bg-[#2c3374] text-white placeholder-gray-400 focus:outline-none"
+          value={emailId}
+          onChange={(e) => setEmailId(e.target.value)}
+        />
 
-            <label className="form-control w-full max-w-xs my-2">
-              <div className="label">
-                <span className="label-text">Password</span>
-              </div>
-              <input
-                type="password"
-                value={password}
-                className="input input-bordered w-full max-w-xs"
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </label>
-          </div>
-
-          {/* ✅ Error message */}
-          {error && (
-            <p className="text-red-500 text-center text-sm mt-2">
-              {typeof error === "string"
-                ? error
-                : error?.error || "Something went wrong"}
-            </p>
-          )}
-
-          <div className="card-actions justify-center m-2">
-            <button
-              className="btn btn-primary w-full"
-              onClick={isLoginForm ? handleLogin : handleSignUp}
-            >
-              {isLoginForm ? "Login" : "Sign Up"}
-            </button>
-          </div>
-
-          {/* Toggle between login/signup */}
-          <p
-            className="m-auto cursor-pointer py-2 text-sm text-blue-500 underline text-center"
-            onClick={() => setIsLoginForm((prev) => !prev)}
+        {/* Password Field with toggle */}
+        <div className="relative mb-4">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="********"
+            className="w-full px-4 py-2 rounded bg-[#2c3374] text-white placeholder-gray-400 focus:outline-none pr-10"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <span
+            onClick={() => setShowPassword((prev) => !prev)}
+            className="absolute right-3 top-2.5 cursor-pointer text-xl text-gray-300"
           >
-            {isLoginForm
-              ? "New User? Signup Here"
-              : "Existing User? Login Here"}
-          </p>
+            {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+          </span>
         </div>
+
+        {/* Confirm Password */}
+        {!isLoginForm && (
+          <div className="relative mb-4">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              placeholder="Confirm Password"
+              className="w-full px-4 py-2 rounded bg-[#2c3374] text-white placeholder-gray-400 focus:outline-none pr-10"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+            />
+            <span
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className="absolute right-3 top-2.5 cursor-pointer text-xl text-gray-300"
+            >
+              {showConfirmPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
+            </span>
+          </div>
+        )}
+
+        {error && (
+          <p className="text-red-400 text-sm text-center mb-2">
+            {typeof error === "string"
+              ? error
+              : error?.error || "Something went wrong"}
+          </p>
+        )}
+
+        <button
+          onClick={isLoginForm ? handleLogin : handleSignUp}
+          className="w-full py-2 mb-4 rounded bg-gradient-to-r from-pink-500 to-purple-500 hover:opacity-90 transition font-semibold"
+        >
+          {isLoginForm ? "Sign In" : "Create Account"}
+        </button>
+
+        <div className="flex items-center my-4">
+          <div className="flex-grow h-px bg-gray-400"></div>
+          <span className="mx-2 text-gray-300">or</span>
+          <div className="flex-grow h-px bg-gray-400"></div>
+        </div>
+
+        <button className="w-full py-2 mb-3 rounded bg-[#2c3374] hover:bg-[#3d4689] transition flex items-center justify-center gap-2">
+          <FaGithub size={18} /> Continue with GitHub
+        </button>
+
+        <button className="w-full py-2 rounded bg-[#2c3374] hover:bg-[#3d4689] transition flex items-center justify-center gap-2">
+          <MdEmail size={18} /> Continue with Google
+        </button>
+
+        <p className="text-sm text-center text-pink-300 mt-6">
+          {isLoginForm ? (
+            <>
+              Don’t have an account?{" "}
+              <span
+                className="underline cursor-pointer"
+                onClick={() => setIsLoginForm(false)}
+              >
+                Sign up
+              </span>
+            </>
+          ) : (
+            <>
+              Already have an account?{" "}
+              <span
+                className="underline cursor-pointer"
+                onClick={() => setIsLoginForm(true)}
+              >
+                Sign in
+              </span>
+            </>
+          )}
+        </p>
       </div>
     </div>
   );

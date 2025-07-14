@@ -15,6 +15,9 @@ import UserCommunityRequests from "./components/UserCommunityRequests";
 import CommunityMembers from "./components/CommunityMembers";
 import CommunitiesWhereImemberOrAdmin from "./components/CommunitiesWhereImemberOrAdmin";
 import CommunitiesWhereImemberOrAdminmembersList from "./components/CommunitiesWhereImemberOrAdminmembersList";
+import CommuntyChatMessage from "./components/CommuntyChatMessage";
+import Form from "../pages/form";
+import SpeedMatch from "../pages/SpeedMatch";
 
 export default function App() {
   return (
@@ -29,6 +32,8 @@ export default function App() {
             {/* 🔐 Auth & Profile routes */}
             <Route path="login" element={<Login />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="formFillUp" element={<Form />} />
+
 
             {/* 🤝 Social routes */}
             <Route path="connections" element={<Connections />} />
@@ -43,9 +48,13 @@ export default function App() {
             <Route path="/community/:id/members" element={<CommunityMembers />} />
             <Route path="/communitiesWhereIMemberOrAdmin" element={<CommunitiesWhereImemberOrAdmin />} />
             <Route path="/:id/whereIamAdminOrMembermembersList" element={<CommunitiesWhereImemberOrAdminmembersList />} />
+            <Route path="/communityChat/:id" element={<CommuntyChatMessage/>}/>
             
-            
+             
 
+
+
+             <Route path="/speedmatch" element={<SpeedMatch />} />
 
           </Route>
         </Routes>

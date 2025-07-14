@@ -4,6 +4,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { addUser } from "../../utils/userSlice";
 import { BASE_URL } from "../../utils/constants";
+import UserCardForEditProfile from "./userCardForEditProfile";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
@@ -61,7 +62,7 @@ const EditProfile = ({ user }) => {
           </div>
 
           {/* 👤 Live Preview */}
-         <div > <UserCard user={{ firstName, lastName, photoUrl, age, gender, about }} /></div>
+         <div > <UserCardForEditProfile user={{ firstName, lastName, photoUrl, age, gender, about }} /></div>
         </div>
 
         {/* ✅ Toast */}

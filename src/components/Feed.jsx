@@ -30,9 +30,15 @@ const Feed = () => {
   }, []);
 
   return (
-   <div className=" min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-green-200 px-4">
-       {feed&&(<UserCard user={feed[0]}/>)}
-   </div>
+    <div className=" min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-green-200 px-4">
+      {feed?.length ? (
+        <UserCard user={feed[0]} />
+      ) : (
+        <div className="text-center text-gray-600 text-lg font-medium">
+          No more users available 😔
+        </div>
+      )}
+    </div>
   );
 };
 
