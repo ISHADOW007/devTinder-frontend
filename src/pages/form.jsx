@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import FormPage1 from '../src/components/FormPage1';
-import FormPage2 from '../src/components/FormPage2';
-import FormPage3 from '../src/components/FormPage3';
-import FormPage4 from '../src/components/FormPage4';
-import ProgressBar from '../src/components/ProgressBar';
+import FormPage1 from '../components/FormPage1';
+import FormPage2 from '../components/FormPage2';
+import FormPage3 from '../components/FormPage3';
+import FormPage4 from '../components/FormPage4';
+import ProgressBar from '../components/ProgressBar';
 import { useSelector } from 'react-redux';
 
 const Form = () => {
