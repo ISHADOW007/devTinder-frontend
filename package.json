@@ -27,6 +27,7 @@
     "react-toastify": "^11.0.5",
     "socket.io-client": "^4.8.1",
     "sonner": "^2.0.6",
+    "tailwindcss": "^4.1.11",
     "y-webrtc": "^10.3.0",
     "yjs": "^13.6.27"
   },
