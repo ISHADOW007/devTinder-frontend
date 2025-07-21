@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import moment from "moment";
 import { BASE_URL } from "../../utils/constants";
 import { useParams } from "react-router-dom";
 
@@ -10,12 +11,9 @@ const CommunityMembers = () => {
 
   const fetchCommunity = async () => {
     try {
-      const res = await axios.get(
-        `${BASE_URL}/communities/${communityId}/members`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.get(`${BASE_URL}/communities/${communityId}/members`, {
+        withCredentials: true,
+      });
       setCommunity(res.data);
     } catch (err) {
       console.error("Failed to fetch community:", err);
@@ -39,35 +37,27 @@ const CommunityMembers = () => {
         endpoint = `${BASE_URL}/communities/${communityId}/remove`;
       }
 
-      await axios.put(
-        endpoint,
-        { userId: targetUserId },
-        { withCredentials: true }
-      );
-
+      await axios.put(endpoint, { userId: targetUserId }, { withCredentials: true });
       fetchCommunity();
     } catch (err) {
       console.error(`Failed to ${action} user:`, err);
     }
   };
 
-  // Helpers for roles
-  const isAdmin = (userId) =>
-    community?.admins?.some((admin) => admin._id === userId);
+  const isAdmin = (userId) => community?.admins?.some((admin) => admin._id === userId);
   const isCreator = (userId) => community?.creator?._id === userId;
 
   if (loading) return <p className="text-center p-4">Loading...</p>;
   if (!community) return <p className="text-center p-4">Community not found</p>;
 
-  // Separate groups
   const creator = community.creator;
   const admins = community.admins.filter((user) => user._id !== creator._id);
   const members = community.members.filter(
     (user) =>
-      user._id !== creator._id && !admins.some((admin) => admin._id === user._id)
+      user._id !== creator._id &&
+      !admins.some((admin) => admin._id === user._id)
   );
 
-  // Render a user item
   const renderUser = (user) => {
     const role = isCreator(user._id)
       ? "Creator"
@@ -80,16 +70,26 @@ const CommunityMembers = () => {
         key={user._id}
         className="p-4 bg-white border rounded-lg shadow-sm flex flex-col sm:flex-row sm:items-center justify-between"
       >
-        {/* User info */}
+        {/* 👤 User Info */}
         <div>
-          <p className="font-semibold text-lg">
+          <p className="font-semibold text-lg flex gap-2 items-center">
             {user.firstName} {user.lastName}
+            {user.isOnline ? (
+              <span className="text-green-600 text-xs font-medium">● Online</span>
+            ) : (
+              <span
+                className="text-gray-500 text-xs"
+                title={`Last seen ${moment(user.lastSeen).format("LLL")}`}
+              >
+                Last seen {moment(user.lastSeen).fromNow()}
+              </span>
+            )}
           </p>
           <p className="text-sm text-gray-600">{user.emailId}</p>
           <span
-            className={`inline-block mt-1 px-2 py-1 text-xs rounded ${
+            className={`inline-block mt-1 px-2 py-1 text-xs rounded font-medium ${
               role === "Creator"
-                ? "bg-yellow-200 text-yellow-800"
+                ? "bg-yellow-100 text-yellow-800"
                 : role === "Admin"
                 ? "bg-blue-100 text-blue-800"
                 : "bg-gray-100 text-gray-800"
@@ -99,7 +99,7 @@ const CommunityMembers = () => {
           </span>
         </div>
 
-        {/* Action buttons */}
+        {/* ⚙️ Action Buttons */}
         {!isCreator(user._id) && (
           <div className="flex space-x-2 mt-4 sm:mt-0">
             {isAdmin(user._id) ? (
@@ -133,28 +133,22 @@ const CommunityMembers = () => {
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-3xl font-bold mb-6">Community Members</h2>
 
-      {/* Creator */}
-      <ul className="space-y-4 mb-6">
-        {renderUser(creator)}
-      </ul>
+      {/* 👑 Creator */}
+      <ul className="space-y-4 mb-6">{renderUser(creator)}</ul>
 
-      {/* Admins */}
+      {/* 🛡️ Admins */}
       {admins.length > 0 && (
         <>
           <h3 className="text-xl font-semibold mb-4">Admins</h3>
-          <ul className="space-y-4 mb-6">
-            {admins.map((user) => renderUser(user))}
-          </ul>
+          <ul className="space-y-4 mb-6">{admins.map((user) => renderUser(user))}</ul>
         </>
       )}
 
-      {/* Members */}
+      {/* 👥 Members */}
       {members.length > 0 && (
         <>
           <h3 className="text-xl font-semibold mb-4">Members</h3>
-          <ul className="space-y-4">
-            {members.map((user) => renderUser(user))}
-          </ul>
+          <ul className="space-y-4">{members.map((user) => renderUser(user))}</ul>
         </>
       )}
     </div>

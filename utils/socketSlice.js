@@ -1,19 +1,29 @@
+// utils/socketSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { createSocketConnection, disconnectSocketInstance } from "./socketManajer";
+
+
 
 const socketSlice = createSlice({
   name: "socket",
   initialState: {
     instance: null,
+    connected: false,
   },
   reducers: {
-    setSocket: (state, action) => {
-      state.instance = action.payload;
+    connectSocket: (state, action) => {
+      const socket = createSocketConnection(action.payload);
+      console.log("1",socket)
+      state.instance = socket;
+      state.connected = true;
     },
-    clearSocket: (state) => {
+    disconnectSocket: (state) => {
+      disconnectSocketInstance();
       state.instance = null;
+      state.connected = false;
     },
   },
 });
 
-export const { setSocket, clearSocket } = socketSlice.actions;
+export const { connectSocket, disconnectSocket } = socketSlice.actions;
 export default socketSlice.reducer;

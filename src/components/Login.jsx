@@ -7,6 +7,7 @@ import { BASE_URL } from "../../utils/constants";
 import { FaGithub } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { connectSocket } from "../../utils/socketSlice";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("");
@@ -29,7 +30,9 @@ const Login = () => {
         { emailId, password },
         { withCredentials: true }
       );
+          console.log(res.data)
       dispatch(addUser(res.data));
+      dispatch(connectSocket(res.data._id)); // 🔗 Connect socket here
       console.log(res.data)
       return navigate("/");
     } catch (err) {

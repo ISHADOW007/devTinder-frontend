@@ -1,49 +1,39 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { createSocketConnection } from "../../utils/socket";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import moment from "moment";
 import { BASE_URL } from "../../utils/constants";
 
 const CommunityChatMessage = () => {
-  const { id } = useParams(); // communityId from URL
-  const communityId = id;
+  const { id: communityId } = useParams();
+  const user = useSelector((store) => store.user);
+  const socket = useSelector((store) => store.socket.instance);
 
+  const userId = user?._id;
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-
-  const user = useSelector((store) => store.user);
-  const userId = user?._id;
-
+  const [uploading, setUploading] = useState(false);
+  const [selectedMessages, setSelectedMessages] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = () =>
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   useEffect(() => {
-    if (!userId || !communityId) return;
+    if (!socket || !userId || !communityId) return;
 
-    const socket = createSocketConnection();
-
-    // Join community chat room
     socket.emit("joinCommunity", { userId, communityId });
 
-    // 🔄 Normalize and set real-time messages
     socket.on("receiveCommunityMessage", (message) => {
-      const normalized = message.sender
-        ? message
-        : {
-            sender: {
-              firstName: message.firstName,
-              lastName: message.lastName,
-            },
-            content: message.text,
-          };
-      setMessages((prev) => [...prev, normalized]);
+      setMessages((prev) => [...prev, message]);
     });
 
-    // 🔄 Fetch previous messages
+    socket.on("messageDeleted", ({ messageId }) => {
+      setMessages((prev) => prev.filter((msg) => msg._id !== messageId));
+    });
+
     const fetchMessages = async () => {
       try {
         const res = await axios.get(`${BASE_URL}/community/${communityId}`, {
@@ -58,18 +48,17 @@ const CommunityChatMessage = () => {
     fetchMessages();
 
     return () => {
-      socket.disconnect();
+      socket.off("receiveCommunityMessage");
+      socket.off("messageDeleted");
     };
-  }, [userId, communityId]);
+  }, [socket, userId, communityId]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   const sendMessage = () => {
-    if (!newMessage.trim()) return;
-
-    const socket = createSocketConnection();
+    if (!newMessage.trim() || !socket) return;
 
     socket.emit("sendCommunityMessage", {
       communityId,
@@ -82,50 +71,186 @@ const CommunityChatMessage = () => {
     setNewMessage("");
   };
 
-  return (
-    <div className="w-3/4 mx-auto border border-gray-600 m-5 h-[70vh] flex flex-col bg-gray-900 text-white">
-      <h1 className="p-5 border-b border-gray-600 text-xl font-semibold">Community Chat</h1>
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-      {/* 💬 Chat Messages */}
-      <div className="flex-1 overflow-y-scroll p-5 space-y-4">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={
-              "chat " +
-              (user.firstName === msg?.sender?.firstName ? "chat-end" : "chat-start")
-            }
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("uFile", file);
+      const res = await axios.post(`${BASE_URL}/cloud/upload`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        withCredentials: true,
+      });
+
+      const imageUrl = res.data.secure_url || res.data.url;
+
+      socket.emit("sendCommunityMessage", {
+        communityId,
+        userId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        fileUrl: imageUrl,
+        fileName: file.name,
+        messageType: "image",
+      });
+    } catch (err) {
+      console.error("Upload failed", err);
+    }
+    setUploading(false);
+  };
+
+  const deleteMessage = (messageId) => {
+    socket.emit("deleteCommunityMessage", { messageId, userId });
+  };
+
+  const toggleSelectMessage = (msgId) => {
+    setSelectedMessages((prev) =>
+      prev.includes(msgId)
+        ? prev.filter((id) => id !== msgId)
+        : [...prev, msgId]
+    );
+  };
+
+  const handleDeleteSelected = () => {
+    selectedMessages.forEach((msgId) => deleteMessage(msgId));
+    setSelectedMessages([]);
+    setShowDropdown(false);
+  };
+
+  return (
+    <div className="w-full max-w-4xl mx-auto border border-gray-600 m-5 h-[75vh] flex flex-col bg-gray-900 text-white rounded shadow-lg">
+      {/* Header with three-dot button */}
+      <div className="p-4 border-b border-gray-700 text-xl font-semibold bg-gray-800 flex justify-between items-center relative">
+        <span>Community Chat</span>
+
+        <div className="relative">
+          <button
+            onClick={() => setShowDropdown(!showDropdown)}
+            className="text-white text-xl px-2 py-1 hover:text-blue-400"
+            title="More options"
           >
-            <div className="chat-header">
-              {`${msg?.sender?.firstName || "User"} ${msg?.sender?.lastName || ""}`}
-              <time className="text-xs opacity-50 ml-2">Just now</time>
+            ⋮
+          </button>
+
+          {showDropdown && (
+            <div className="absolute right-0 top-full mt-2 bg-gray-800 border border-gray-700 rounded shadow-lg z-50 w-44 text-sm">
+              <button
+                onClick={handleDeleteSelected}
+                disabled={selectedMessages.length === 0}
+                className={`block w-full text-left px-3 py-1.5 text-white hover:bg-red-600 rounded-t ${
+                  selectedMessages.length === 0
+                    ? "opacity-50 cursor-not-allowed"
+                    : ""
+                }`}
+              >
+                🗑 Delete Selected
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedMessages([]);
+                  setShowDropdown(false);
+                }}
+                className="block w-full text-left px-3 py-1.5 text-white hover:bg-gray-700 rounded-b"
+              >
+                ❌ Cancel Selection
+              </button>
             </div>
-            <div className="chat-bubble bg-blue-600 text-white">
-              {msg?.content || msg?.text || "No message"}
+          )}
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {messages.map((msg) => {
+          const isMine = userId === msg?.sender?._id;
+          const isSelected = selectedMessages.includes(msg._id);
+
+          return (
+            <div
+              key={msg._id}
+              className={`flex ${isMine ? "justify-end" : "justify-start"} relative`}
+              onClick={() => toggleSelectMessage(msg._id)}
+            >
+              <div
+                className={`max-w-xs px-3 py-2 rounded cursor-pointer border-2 transition-all duration-200 ${
+                  isSelected ? "border-yellow-400 scale-105" : "border-transparent"
+                } ${isMine ? "bg-blue-600 rounded-br-none" : "bg-green-600 rounded-bl-none"}`}
+              >
+                <div className="text-xs font-semibold mb-1 select-text truncate">
+                  {msg?.sender?.firstName} {msg?.sender?.lastName}
+                </div>
+
+                {msg.messageType === "image" && msg.fileUrl ? (
+                  <img
+                    src={msg.fileUrl}
+                    alt="sent"
+                    className="rounded max-w-full max-h-40"
+                    loading="lazy"
+                  />
+                ) : (
+                  <p className="whitespace-pre-wrap break-words text-sm line-clamp-3">
+                    {msg.content || msg.text}
+                  </p>
+                )}
+
+                <time className="block text-xs text-gray-300 mt-1 text-right select-none">
+                  {moment(msg.createdAt).fromNow()}
+                </time>
+
+                {!isSelected && isMine && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteMessage(msg._id);
+                    }}
+                    title="Delete message"
+                    className="absolute top-1 right-1 text-gray-300 hover:text-red-400 transition text-sm"
+                    aria-label="Delete message"
+                  >
+                    🗑
+                  </button>
+                )}
+              </div>
             </div>
-            <div className="chat-footer opacity-50">Seen</div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ✍️ Input + Send */}
-      <div className="p-5 border-t border-gray-600 flex items-center gap-2">
+      {/* Input Box */}
+      <div className="p-4 border-t border-gray-700 flex items-center gap-2 bg-gray-800">
         <input
           type="text"
           placeholder="Type your message..."
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          className="flex-1 border border-gray-500 bg-gray-800 text-white rounded p-2 outline-none"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") sendMessage();
-          }}
+          className="flex-1 border border-gray-500 bg-gray-700 text-white rounded px-4 py-2"
+          onKeyDown={(e) => e.key === "Enter" && sendMessage()}
         />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          className="hidden"
+          id="fileInput"
+          disabled={uploading}
+        />
+        <label
+          htmlFor="fileInput"
+          className={`cursor-pointer bg-blue-700 px-3 py-2 rounded hover:bg-blue-800 ${
+            uploading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          📎
+        </label>
         <button
           onClick={sendMessage}
-          className="btn btn-secondary bg-blue-700 hover:bg-blue-800 text-white px-4 py-2 rounded"
+          className="bg-blue-700 px-4 py-2 rounded text-white hover:bg-blue-800"
+          disabled={uploading}
         >
-          Send
+          {uploading ? "Uploading..." : "Send"}
         </button>
       </div>
     </div>

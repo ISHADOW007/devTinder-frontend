@@ -39,11 +39,11 @@ const CommunitiesWhereImemberOrAdmin = () => {
             className="p-4 bg-white border rounded-lg shadow-sm flex flex-col md:flex-row justify-between md:items-center"
           >
             <div className="mb-4 md:mb-0">
-              <h3 className="text-xl font-semibold">{comm.name}</h3>
-              <p className="text-gray-600">{comm.description}</p>
+              <h3 className="text-xl font-semibold">{comm?.name}</h3>
+              <p className="text-gray-600">{comm?.description}</p>
               <p className="text-sm mt-1">
-                Creator: {comm.creator.firstName} {comm.creator.lastName} (
-                {comm.creator.emailId})
+                Creator: {comm?.creator?.firstName} {comm?.creator?.lastName} (
+                {comm?.creator?.emailId})
               </p>
             </div>
 

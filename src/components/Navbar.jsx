@@ -1,12 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
-import { BASE_URL } from '../../utils/constants';
-import { removeUser } from '../../utils/userSlice';
-import { removeFeed } from '../../utils/feedSlice';
-import { removeConnections } from '../../utils/connectionSlice';
+import { BASE_URL } from "../../utils/constants";
+import { removeUser } from "../../utils/userSlice";
+import { removeFeed } from "../../utils/feedSlice";
+import { removeConnections } from "../../utils/connectionSlice";
+import { disconnectSocket } from "../../utils/socketSlice";
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
@@ -14,21 +15,31 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const socket = useSelector((state) => state.socket.instance);
 
   // ✅ Handle Logout
-  const handleLogout = async () => {
-    try {
-      await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
+const handleLogout = async () => {
+  try {
+    await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
 
-      dispatch(removeUser()); // ✅ Clear user from Redux
-      dispatch(removeFeed()); // ✅ Clear feed from Redux
-      dispatch(removeConnections()); // ✅ Clear feed from Redux
-
-      navigate('/login'); // 🔁 Redirect to login
-    } catch (error) {
-      console.error("Logout failed:", error.message);
+    if (socket) {
+      socket.emit("manualDisconnect", { userId: user._id }); // ✅ Notify backend
+      console.log("satyam")
+      socket.disconnect(); // ✅ Close the connection
+      console.log("Socket disconnected");
     }
-  };
+
+    dispatch(disconnectSocket());
+    dispatch(removeUser());
+    dispatch(removeFeed());
+    dispatch(removeConnections());
+
+    navigate("/login");
+  } catch (error) {
+    console.error("Logout failed:", error.message);
+  }
+};
+
 
   // ✅ Close dropdown when clicking outside
   useEffect(() => {
@@ -72,7 +83,7 @@ const Navbar = () => {
                     alt="User Avatar"
                     src={
                       user.photoUrl ||
-                      'https://cdn-icons-png.flaticon.com/512/847/847969.png'
+                      "https://cdn-icons-png.flaticon.com/512/847/847969.png"
                     }
                   />
                 </div>
@@ -95,24 +106,35 @@ const Navbar = () => {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/connections" className="hover:bg-gray-100 rounded">Connections</Link>
+                  <Link to="/connections" className="hover:bg-gray-100 rounded">
+                    Connections
+                  </Link>
                 </li>
                 <li onClick={handleLogout}>
                   <a className="hover:bg-gray-100 rounded">Logout</a>
                 </li>
-                 <li>
-                  <Link to="/createCommunity" className="hover:bg-gray-100 rounded">
+                <li>
+                  <Link
+                    to="/createCommunity"
+                    className="hover:bg-gray-100 rounded"
+                  >
                     createCommunity
                     <span className="badge badge-primary">New</span>
                   </Link>
                 </li>
-                 <li>
-                  <Link to="/allCommunityList" className="hover:bg-gray-100 rounded">
-                     allCommunityList
+                <li>
+                  <Link
+                    to="/allCommunityList"
+                    className="hover:bg-gray-100 rounded"
+                  >
+                    allCommunityList
                     <span className="badge badge-primary">New</span>
                   </Link>
-                  <Link to="/communitiesWhereIMemberOrAdmin" className="hover:bg-gray-100 rounded">
-                     CommunitiesWhereImemberOrAdmin
+                  <Link
+                    to="/communitiesWhereIMemberOrAdmin"
+                    className="hover:bg-gray-100 rounded"
+                  >
+                    CommunitiesWhereImemberOrAdmin
                     <span className="badge badge-primary">New</span>
                   </Link>
                 </li>
