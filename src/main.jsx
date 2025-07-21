@@ -5,7 +5,7 @@ import App from "./App.jsx";
 
 import { Toaster } from "sonner";
 import { Provider } from "react-redux";
-import appStore from "../utils/appStore";
+import appStore from "./utils/appStore.js";
 
 
 createRoot(document.getElementById("root")).render(

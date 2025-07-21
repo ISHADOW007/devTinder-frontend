@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { lookingFor, addUser } from "../../utils/userSlice";
+import { lookingFor, addUser } from "../utils/userSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { BASE_URL } from "../../utils/constants";
+import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 
 const FormPage4 = ({ setSteps, localUser, setLocalUser }) => {

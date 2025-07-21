@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
-import { BASE_URL } from "../../utils/constants";
+import { BASE_URL } from "../utils/constants";
 
 const CommunityChatMessage = () => {
   const { id: communityId } = useParams();

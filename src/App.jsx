@@ -16,12 +16,12 @@ import CommunityMembers from "./components/CommunityMembers";
 import CommunitiesWhereImemberOrAdmin from "./components/CommunitiesWhereImemberOrAdmin";
 import CommunitiesWhereImemberOrAdminmembersList from "./components/CommunitiesWhereImemberOrAdminmembersList";
 import CommuntyChatMessage from "./components/CommuntyChatMessage";
-import Form from "../pages/form";
-import SpeedMatch from "../pages/SpeedMatch";
-import useUserStatusListener from "../utils/useUserStatusListener";
-import { connectSocket } from "../utils/socketSlice";
+import Form from "./pages/form";
+import SpeedMatch from "./pages/SpeedMatch";
+import useUserStatusListener from "./utils/useUserStatusListener";
+import { connectSocket } from "./utils/socketSlice";
 import { useEffect } from "react";
-import useTabVisibilityStatus from "../utils/useTabVisibilityStatus";
+import useTabVisibilityStatus from "./utils/useTabVisibilityStatus";
 
 
 

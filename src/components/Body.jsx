@@ -2,8 +2,8 @@ import { useEffect } from "react";
 import Navbar from "./Navbar"; // 🧭 Top navigation bar
 import { Outlet, useNavigate } from "react-router-dom"; // 🔁 Placeholder for nested route components
 import Footer from "./Footer"; // 🧾 Bottom footer component
-import { BASE_URL } from "../../utils/constants"; // 🌐 Base URL for API requests
-import { addUser } from "../../utils/userSlice"; // 👤 Redux action to store user in state
+import { BASE_URL } from "../utils/constants"; // 🌐 Base URL for API requests
+import { addUser } from "../utils/userSlice"; // 👤 Redux action to store user in state
 import { useDispatch, useSelector } from "react-redux"; // 🚀 Hook to dispatch Redux actions
 import axios from "axios"; // 🌐 Library for making HTTP requests
 

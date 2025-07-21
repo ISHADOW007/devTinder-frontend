@@ -1,7 +1,7 @@
 // src/pages/SpeedMatch.jsx
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import QueueScreen from "../src/components/QueueScreen";
-import MatchRoom from "../src/components/MatchRoom";
+import  { useEffect, useRef, useState, useCallback } from "react";
+import QueueScreen from "../components/QueueScreen";
+import MatchRoom from "../components/MatchRoom";
 import { io } from "socket.io-client";
 import { toast } from "sonner";
 
