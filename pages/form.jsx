@@ -14,7 +14,7 @@ const Form = () => {
   const [localUser,setLocalUser]=useState(user)
   
     useEffect(()=>{
-         setLocalUser((prev)=> user)
+         setLocalUser( user)
        
     },[user]);
 

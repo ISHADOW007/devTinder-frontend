@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { interests as setInterests, skills as setSkills } from '../../utils/userSlice';
+import React, { useState } from 'react';
 
 const skillList = [
   "JavaScript", "TypeScript", "React", "Vue.js", "Angular", "Node.js", "Python", "Java",
@@ -14,9 +12,7 @@ const interestList = [
   "E-commerce", "SaaSs", "Startups", "Tech Talks"
 ];
 
-const FormPage3 = ({ steps, setSteps, localUser, setLocalUser }) => {
-  const dispatch = useDispatch();
-
+const FormPage3 = ({ setSteps, localUser, setLocalUser }) => {
   const [selectedSkills, setSelectedSkills] = useState(localUser.skills || []);
   const [selectedInterests, setSelectedInterests] = useState(localUser.interests || []);
 

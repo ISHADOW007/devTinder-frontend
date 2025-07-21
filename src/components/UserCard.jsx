@@ -1,26 +1,28 @@
 import axios from "axios";
-
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../../utils/feedSlice";
 import { BASE_URL } from "../../utils/constants";
 
 const UserCard = ({ user }) => {
+  const dispatch = useDispatch(); // ✅ Moved here
 
-    if(!user){
-        return
-    }
-  const { _id, firstName, lastName, photoUrl, age, gender, about } = user;
-  const dispatch = useDispatch();
+  if (!user) {
+    return null; // 👈 Best to return a valid JSX value like null
+  }
+
+  const { _id, firstName, lastName, age, gender, about } = user;
 
   const handleSendRequest = async (status, userId) => {
     try {
-      const res = await axios.post(
+      await axios.post(
         BASE_URL + "/request/send/" + status + "/" + userId,
         {},
         { withCredentials: true }
       );
       dispatch(removeUserFromFeed(userId));
-    } catch (err) {}
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -50,4 +52,5 @@ const UserCard = ({ user }) => {
     </div>
   );
 };
+
 export default UserCard;

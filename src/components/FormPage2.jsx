@@ -1,11 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setProfessionalLink } from '../../utils/userSlice';
-
-const FormPage2 = ({ steps, setSteps,localUser,setLocalUser }) => {
+const FormPage2 = ({ setSteps,localUser,setLocalUser }) => {
   // const user = useSelector((store) => store.user);
   // const [localUser, setLocalUser] = useState(user);
-  const dispatch = useDispatch();
 
   // useEffect(() => {
   //   setLocalUser(user);

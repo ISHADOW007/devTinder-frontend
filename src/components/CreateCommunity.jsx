@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../../utils/constants";
 
@@ -12,7 +12,7 @@ const CreateCommunity = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
-  const user = useSelector((state) => state.user);
+  // const user = useSelector((state) => state.user);
 
   const handleCreate = async (e) => {
     e.preventDefault();
@@ -22,7 +22,7 @@ const CreateCommunity = () => {
       setLoading(true);
       setError("");
 
-      const res = await axios.post(
+      await axios.post(
         BASE_URL + "/communities",
         {
           name,

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import Navbar from "./Navbar"; // 🧭 Top navigation bar
 import { Outlet, useNavigate } from "react-router-dom"; // 🔁 Placeholder for nested route components
 import Footer from "./Footer"; // 🧾 Bottom footer component
@@ -32,7 +32,7 @@ const Body = () => {
     if (!userData) {
       fetchUser();
     }
-  }, []);
+  }, [userData]);
 
   return (
     <>

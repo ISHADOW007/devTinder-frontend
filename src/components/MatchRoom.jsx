@@ -89,7 +89,7 @@ const MatchRoom = ({ onLeave, roomId, partnerId, socket }) => {
     const candidateQueue = [];
     let remoteDescSet = false;
 
-    socket.on("signal", async ({ from, data }) => {
+    socket.on("signal", async ({ data }) => {
       if (!pc.current) return;
 
       try {

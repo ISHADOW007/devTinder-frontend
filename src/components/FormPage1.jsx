@@ -1,9 +1,5 @@
-import React from "react";
-import { useDispatch } from "react-redux";
-import { setBasicInfo } from "../../utils/userSlice";
-
-const FormPage1 = ({ steps, setSteps, localUser, setLocalUser }) => {
-  const dispatch = useDispatch();
+const FormPage1 = ({ setSteps, localUser, setLocalUser }) => {
+  
 
   const handleInputChange = (key, value) => {
     setLocalUser((prev) => ({

@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Body from "./components/Body";
 import Login from "./components/Login";
 import Profile from "./components/Profile";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import {  useDispatch, useSelector } from "react-redux";
 
 import Feed from "./components/Feed";
 import Connections from "./components/Connections";
@@ -20,7 +20,7 @@ import Form from "../pages/form";
 import SpeedMatch from "../pages/SpeedMatch";
 import useUserStatusListener from "../utils/useUserStatusListener";
 import { connectSocket } from "../utils/socketSlice";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useTabVisibilityStatus from "../utils/useTabVisibilityStatus";
 
 
