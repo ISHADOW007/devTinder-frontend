@@ -19,8 +19,8 @@ const Form = () => {
     },[user]);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-900 text-white px-4">
-      <div className=" max-w-sm flex flex-col items-start justify-center p-4 rounded-md m-2 bg-blue-600 shadow-md">
+    <div className="flex justify-center items-center min-h-screen  bg-gray-900 text-white px-4">
+      <div className=" min-w-sm flex flex-col items-start justify-center p-4  rounded-md m-2 bg-blue-600 shadow-md">
         <h2 className="text-xl font-bold mb-2">Complete Your Profile</h2>
         <p className="text-sm mb-3">Help us find your perfect developer match</p>
 

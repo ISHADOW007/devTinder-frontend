@@ -35,7 +35,7 @@ const Body = () => {
   }, [userData]);
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col justify-between ">
       {/* 🔝 Persistent navbar across all routes */}
       <Navbar />
 
@@ -44,7 +44,7 @@ const Body = () => {
 
       {/* 🔚 Persistent footer across all routes */}
       <Footer />
-    </>
+    </div>
   );
 };
 

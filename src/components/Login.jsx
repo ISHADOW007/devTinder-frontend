@@ -1,13 +1,15 @@
 import { useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { FaGithub } from "react-icons/fa";
 import { MdEmail } from "react-icons/md";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { connectSocket } from "../utils/socketSlice";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
 const Login = () => {
   const [emailId, setEmailId] = useState("");
@@ -22,7 +24,14 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.user);
+  const location = useLocation();
 
+  // Allow login page always
+  if (!user?._id && location.pathname !== "/login") {
+    return <Navigate to="/login" replace />;
+  }
+ 
   const handleLogin = async () => {
     try {
       const res = await axios.post(
@@ -62,7 +71,9 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#0e112e] px-4">
+    <> 
+       <Navbar/>
+       <div className="flex justify-center items-center min-h-screen bg-[#0e112e] px-4">
       <div className="w-full max-w-md bg-[#1e2561] text-white p-6 rounded-2xl shadow-lg relative">
         <button
           onClick={() => setIsLoginForm((prev) => !prev)}
@@ -192,7 +203,12 @@ const Login = () => {
           )}
         </p>
       </div>
-    </div>
+      </div>
+      <Footer/>
+    
+    
+    </>
+  
   );
 };
 

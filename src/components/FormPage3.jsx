@@ -43,13 +43,13 @@ const FormPage3 = ({ setSteps, localUser, setLocalUser }) => {
 
   return (
     <>
-      <div className="w-full">
+      <div className="w-full w-[700px]">
         <p className="text-lg font-semibold text-white mb-4">Tech Skills & Interests</p>
 
         {/* Skills */}
         <div className="mb-6 w-full">
           <p className="text-white font-medium mb-2">Tech Skills (Select all that apply)</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full">
             {skillList.map((skill) => (
               <button
                 key={skill}
@@ -68,7 +68,7 @@ const FormPage3 = ({ setSteps, localUser, setLocalUser }) => {
         {/* Interests */}
         <div className="mb-6">
           <p className="text-white font-medium mb-2">Interests (Select your favorites)</p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
             {interestList.map((interest) => (
               <button
                 key={interest}

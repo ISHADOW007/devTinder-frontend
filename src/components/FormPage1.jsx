@@ -23,10 +23,10 @@ const FormPage1 = ({ setSteps, localUser, setLocalUser }) => {
 
   return (
     <>
-      <div className="m-3 flex flex-col items-start w-full">
+      <div className="m-3 flex flex-col items-start w-full mx-auto">
         <p className="text-white font-semibold mb-4">Basic Information</p>
 
-        <div className="flex gap-6 mb-4 w-full">
+      <div className="flex gap-6 mb-4 w-full ">
           {/* First Name */}
           <div className="w-1/2">
             <label

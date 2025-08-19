@@ -22,6 +22,7 @@ import useUserStatusListener from "./utils/useUserStatusListener";
 import { connectSocket } from "./utils/socketSlice";
 import { useEffect } from "react";
 import useTabVisibilityStatus from "./utils/useTabVisibilityStatus";
+import NotFound from "./components/NotFound";
 
 
 
@@ -41,31 +42,36 @@ export default function App() {
   return (
     <BrowserRouter basename="/">
       <Routes>
+        <Route path="login" element={<Login />} />
         <Route path="/" element={<Body />}>
           <Route index element={<Feed />} />
-          <Route path="login" element={<Login />} />
+          
           <Route path="profile" element={<Profile />} />
           <Route path="formFillUp" element={<Form />} />
           <Route path="connections" element={<Connections />} />
           <Route path="requests" element={<Requests />} />
           <Route path="chat/:targetUserId" element={<Chat />} />
           <Route path="createCommunity" element={<CreateCommunity />} />
-          <Route path="/userCommunity" element={<UserCommunityList />} />
-          <Route path="/userCommunity/:id" element={<UserCommunityRequests />} />
-          <Route path="/allCommunityList" element={<AllCommunityList />} />
-          <Route path="/community/:id/members" element={<CommunityMembers />} />
+          <Route path="userCommunity" element={<UserCommunityList />} />
+          <Route path="userCommunity/:id" element={<UserCommunityRequests />} />
+          <Route path="allCommunityList" element={<AllCommunityList />} />
+          <Route path="community/:id/members" element={<CommunityMembers />} />
           <Route
-            path="/communitiesWhereIMemberOrAdmin"
+            path="communitiesWhereIMemberOrAdmin"
             element={<CommunitiesWhereImemberOrAdmin />}
           />
           <Route
-            path="/:id/whereIamAdminOrMembermembersList"
+            path=":id/whereIamAdminOrMembermembersList"
             element={<CommunitiesWhereImemberOrAdminmembersList />}
           />
-          <Route path="/communityChat/:id" element={<CommuntyChatMessage />} />
-          <Route path="/speedmatch" element={<SpeedMatch />} />
+          <Route path="communityChat/:id" element={<CommuntyChatMessage />} />
+          <Route path="speedmatch" element={<SpeedMatch />} />
+          {/* ✅ Catch-all 404 inside Body */}
+         <Route path="*" element={<NotFound />} />
           
         </Route>
+        {/* ✅ Catch-all 404 inside Body */}
+         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );
